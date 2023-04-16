@@ -2,7 +2,10 @@ name: Push to AWS (EC2)
 
 on:
   pull_request:
-    [opened, ready_for_review, synchronize, reopened]
+    types: [opened, ready_for_review, synchronize, reopened]
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
