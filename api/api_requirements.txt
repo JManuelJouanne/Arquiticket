@@ -1,0 +1,10 @@
+paho-mqtt
+python-dotenv
+sqlalchemy
+pydantic
+fastapi
+autopep8
+uvicorn
+alembic
+psycopg2
+requests
