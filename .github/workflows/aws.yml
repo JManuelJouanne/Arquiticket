@@ -1,0 +1,29 @@
+name: Push to AWS (EC2)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to EC2 on master branch push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the files
+        uses: actions/checkout@v2
+
+      - name: Clone files to server
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.EC2_SSH_KEY }}
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          # For now, this only starts the app without any additional changes
+          # this should be different once lambda and S3 is implemented
+          script: |
+            cd ~/${{ secrets.TARGET_DIR }}
+            git pull
+            docker-compose stop
+            docker-compose build --no-cache
