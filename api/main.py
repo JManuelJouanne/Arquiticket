@@ -8,12 +8,6 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-"""
-/events?page=2&count=25
-"""
-
-
-# Todo: transform operations to async
 
 def get_db():
     db = SessionLocal()
