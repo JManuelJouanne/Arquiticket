@@ -1,8 +1,6 @@
 name: Push to AWS (EC2)
 
 on:
-  pull_request:
-    types: [opened, ready_for_review, synchronize, reopened]
   push:
     branches:
       - main
@@ -22,6 +20,10 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
+          # For now, this only starts the app without any additional changes
+          # this should be different once lambda and S3 is implemented
           script: |
             cd ~/${{ secrets.TARGET_DIR }}
-            mkdir test
+            git pull
+            docker-compose stop
+            docker-compose build --no-cache
