@@ -5,14 +5,10 @@ import json
 import requests
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy_utils import drop_database, create_database
 
 from . import crud, models, schemas
 from .database import SessionLocal, engine
 
-
-drop_database(engine.url)
-create_database(engine.url)
 
 models.Base.metadata.create_all(bind=engine)
 
