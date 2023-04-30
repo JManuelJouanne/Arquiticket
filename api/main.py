@@ -3,15 +3,22 @@ from sqlalchemy.orm import Session
 
 import json
 import requests
+from requests.models import Response
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
 from . import crud, models, schemas
 from .database import SessionLocal, engine
-
+from http import HTTPStatus
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+
+@app.get("/")
+def home():
+    return {"message": "Health Check Passed!"}
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -56,7 +63,7 @@ def read_events(page: int = 0, count: int = 25, db: Session = Depends(get_db)):
 
 # Desde el front recibe el id del evento y la cantidad de entradas que quieren comprar
 # Los envía a publisher para que valide la compra
-@app.post("/events/buy/")
+@app.post("/events/buy/", responses={204: {"model": None}}, )
 async def validate_events(info: Request, db: Session = Depends(get_db)):
     uuid_request = generate_uuid()
     payload = await info.json()
@@ -77,9 +84,12 @@ async def validate_events(info: Request, db: Session = Depends(get_db)):
     }
     requests.post(
         "http://publisher:8000/requests_create/",
-        headers={"Content-type": "application/json"},
+        headers={"Content-type": "application/json", "Access-Control-Allow-Origin": "*"},
         json=json.dumps(validation_info)
     )
+    response = Response()
+    response.headers = {"Access-Control-Allow-Origin": "*"}
+    return response
 
 
 # Recibe TODAS las validaciones y en el caso de que sea valida
