@@ -77,7 +77,7 @@ async def validate_events(info: Request, db: Session = Depends(get_db)):
     }
     requests.post(
         "http://publisher:8000/requests_create/",
-        headers={"Content-type": "application/json"},
+        headers={"Content-type": "application/json", "Access-Control-Allow-Origin": "*"},
         json=json.dumps(validation_info)
     )
 
