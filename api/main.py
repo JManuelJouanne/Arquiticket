@@ -88,6 +88,7 @@ async def validate_events(info: Request, db: Session = Depends(get_db)):
         json=json.dumps(validation_info)
     )
     response = Response()
+    response.headers = {"Access-Control-Allow-Origin": "*"}
     return response
 
 
