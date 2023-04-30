@@ -1,5 +1,4 @@
 import json
-
 import paho.mqtt.client as mqtt
 import os
 from dotenv import load_dotenv
@@ -9,15 +8,31 @@ import requests
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     client.subscribe("events/chile")
+    client.subscribe("events/requests")
+    client.subscribe("events/validation")
 
 
 def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload))
-    requests.post(
-        "http://api:8000/events/",
-        headers={"Content-type": "application/json"},
-        json=json.loads(msg.payload)
-    )
+
+    if (msg.topic == "events/chile"):
+        requests.post(
+            "http://api:8000/events/",
+            headers={"Content-type": "application/json"},
+            json=json.loads(msg.payload)
+        )
+    elif (msg.topic == "events/requests"):
+        requests.post(
+            "http://api:8000/requests/",
+            headers={"Content-type": "application/json"},
+            json=json.loads(msg.payload)
+        )
+    elif (msg.topic == "events/validation"):
+        requests.post(
+            "http://api:8000/validations/",
+            headers={"Content-type": "application/json"},
+            json=json.loads(msg.payload)
+        )
 
 
 load_dotenv()

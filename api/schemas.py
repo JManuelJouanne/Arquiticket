@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class EventBase(BaseModel):
+    event_id: str
     name: str
     date: str
     price: int
@@ -16,7 +17,46 @@ class EventCreate(EventBase):
 
 
 class Event(EventBase):
-    id: int
+    event_id: str
+
+    class Config:
+        orm_mode = True
+
+
+class RequestBase(BaseModel):
+    request_id: str
+    group_id: str
+    event_id: str
+    deposit_token: str
+    quantity: int
+    seller: int
+
+
+class RequestCreate(RequestBase):
+    pass
+
+
+class Request(RequestBase):
+    request_id: str
+
+    class Config:
+        orm_mode = True
+
+
+class TicketBase(BaseModel):
+    request_id: str
+    user_id: int
+    event_id: str
+    quantity: int
+    status: int
+
+
+class TicketCreate(TicketBase):
+    pass
+
+
+class Ticket(TicketBase):
+    request_id: str
 
     class Config:
         orm_mode = True

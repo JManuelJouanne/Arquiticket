@@ -20,6 +20,20 @@ services:
     volumes:
       - .:/api
 
+  publisher:
+    build:
+      context: ./publisher
+      dockerfile: publisher.dockerfile
+    command: bash -c 'uvicorn main:app --host 0.0.0.0'
+    depends_on:
+      - api
+    ports:
+      - 8009:8001
+    expose:
+      - 8011
+    volumes:
+      - .:/api
+
   api:
     build:
       context: ./api

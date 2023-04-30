@@ -2,8 +2,13 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 
-def get_event(db: Session, event_id: int):
-    return db.query(models.Event).filter(models.Event.id == event_id).first()
+def get_event(db: Session, event_id: str):
+    return db.query(models.Event).filter(models.Event.event_id == event_id).first()
+
+
+def update_event(db: Session, event_id: str, discount: int):
+    db.query(models.Event).filter(models.Event.event_id == event_id).first().quantity -= discount
+    db.commit()
 
 
 def get_events(db: Session, skip: int = 0, limit: int = 100):
@@ -16,3 +21,41 @@ def create_event(db: Session, event: schemas.EventCreate):
     db.commit()
     db.refresh(db_event)
     return db_event
+
+
+def get_request(db: Session, request_id: str):
+    return db.query(models.Request).filter(models.Request.request_id == request_id).first()
+
+
+def get_requests_user(db: Session, user_id: int):
+    return db.query(models.Request).filter(models.Request.user_id == user_id).all()
+
+
+def create_request(db: Session, event: schemas.RequestCreate):
+    db_request = models.Request(**event.dict())
+    db.add(db_request)
+    db.commit()
+    db.refresh(db_request)
+    return db_request
+
+
+def get_ticket(db: Session, request_id: int):
+    return db.query(models.Ticket).filter(models.Ticket.request_id == request_id).first()
+
+
+def get_tickets_user(db: Session, user_id: int, status: int):
+    return db.query(models.Ticket).filter(models.Ticket.user_id == user_id,
+                                          models.Ticket.status == status).all()
+
+
+def create_ticket(db: Session, ticket: schemas.TicketCreate):
+    db_ticket = models.Ticket(**ticket.dict())
+    db.add(db_ticket)
+    db.commit()
+    db.refresh(db_ticket)
+    return db_ticket
+
+
+def update_ticket(db: Session, request_id: str, status: int):
+    db.query(models.Ticket).filter(models.Ticket.request_id == request_id).first().status = status
+    db.commit()
