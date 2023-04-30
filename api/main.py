@@ -103,6 +103,6 @@ async def check_validation(validations: Request, db: Session = Depends(get_db)):
 
 # Muestra tickets del usuario en espera
 @app.get("/tickets_user/", response_model=list[schemas.Ticket])
-def read_tickets(user_id=int, status=int, db: Session = Depends(get_db)):
+def read_tickets(user_id=str, status=int, db: Session = Depends(get_db)):
     tickets = crud.get_tickets_user(db, user_id=user_id, status=status)
     return tickets
