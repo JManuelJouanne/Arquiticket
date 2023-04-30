@@ -27,7 +27,7 @@ def get_request(db: Session, request_id: str):
     return db.query(models.Request).filter(models.Request.request_id == request_id).first()
 
 
-def get_requests_user(db: Session, user_id: int):
+def get_requests_user(db: Session, user_id: str):
     return db.query(models.Request).filter(models.Request.user_id == user_id).all()
 
 
@@ -39,11 +39,11 @@ def create_request(db: Session, event: schemas.RequestCreate):
     return db_request
 
 
-def get_ticket(db: Session, request_id: int):
+def get_ticket(db: Session, request_id: str):
     return db.query(models.Ticket).filter(models.Ticket.request_id == request_id).first()
 
 
-def get_tickets_user(db: Session, user_id: int, status: int):
+def get_tickets_user(db: Session, user_id: str, status: int):
     return db.query(models.Ticket).filter(models.Ticket.user_id == user_id,
                                           models.Ticket.status == status).all()
 

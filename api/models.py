@@ -28,7 +28,7 @@ class Request(Base):
 class Ticket(Base):
     __tablename__ = "tickets"
     request_id = Column(String, primary_key=True, index=True)
-    user_id = Column(Integer)
+    user_id = Column(String)
     event_id = Column(String)
     quantity = Column(Integer)
     status = Column(Integer)
