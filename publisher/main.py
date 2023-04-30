@@ -8,6 +8,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+
+@app.get("/")
+def home():
+    return {"message": "Health Check Passed!"}
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

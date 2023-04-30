@@ -8,10 +8,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from . import crud, models, schemas
 from .database import SessionLocal, engine
 
-
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+
+@app.get("/")
+def home():
+    return {"message": "Health Check Passed!"}
+
 
 app.add_middleware(
     CORSMiddleware,
