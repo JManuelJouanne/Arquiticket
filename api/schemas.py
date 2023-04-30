@@ -45,7 +45,7 @@ class Request(RequestBase):
 
 class TicketBase(BaseModel):
     request_id: str
-    user_id: int
+    user_id: str
     event_id: str
     quantity: int
     status: int
