@@ -8,7 +8,6 @@ import uuid
 from fastapi.middleware.cors import CORSMiddleware
 from . import crud, models, schemas
 from .database import SessionLocal, engine
-from http import HTTPStatus
 
 models.Base.metadata.create_all(bind=engine)
 
