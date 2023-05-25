@@ -1,4 +1,4 @@
-# 2023-1 / IIC2173 - E1 | PPE Ticket Seller
+# 2023-1 / IIC2173 - E2 | CPE Ticket Seller
 *aka. Procesamiento de Pagos como Eventos*
 
 Integrantes:
@@ -8,11 +8,6 @@ Integrantes:
 - Matias Guzman
 - Manuel Jouanne
 ---
-## **Nota importante**
-Se ocupó más de una cuenta AWS para este proyecto, por lo que se adjuntan dos credenciales de acceso. 
-
-`name_pending`: para Cognito y SES
-`corrector`: para el resto (región principal us-east-1)
 
 ## **Herramientas utilizadas**
 Las siguientes herramientas fueron utilizadas en el proyecto:
@@ -39,38 +34,3 @@ El producto final solo necesita de dos rutas (Front y api), sin embargo, dado qu
 * S3 Bucket: `http://entrega-arqui.s3-website.us-east-2.amazonaws.com`
 * Cloudfront Distribution: `https://ds2x5sjhqf7r7.cloudfront.net`
 * Api Gateway: `https://yxwrw33q37.execute-api.us-east-2.amazonaws.com/production`
-
-
-### **Requisitos funcionales**
- 
-* ✅ **RF1 (registro)**
-* ✅ **RF2 (lista de eventos)**
-    * ❌ **Bonus** 
-* ✅ **RF3: (Mostar detalle de eventos)** 
-* ✅ **RF4: (Mostrar a los usuarios sus entradas)**
-* ✅ **RF5: (Publicacion entradas):** se publica en event/requests y se espera la respuesta en event/validation.
-* ✅ **RF6: (Se actulizan la cantidad de entradas):** se escucha continuamente el canal events/requests y events/validation.
-
-
-### **Requisitos no funcionales**
-
-* ✅ **RNF01 (implementación front-back)**
-* ✅ **RNF02 (Docker)**
-* ✅ **RNF03 (Budget Alert):** se puede encontrar con nombre My Monthly Cost Budget.
-* ✅ **RNF04 (Api gateway) :** se puede encontrar una api con nombre **arquiticket**, con ruta `api.ticketsbycorubio.me`.
-* ✅ **RNF05 (autentificación):** implementado con AWS Cognito.
-    * ❌ **Bonus** 
-* ✅ **RNF06 (S3 + Cloudfront)**
-* ❌ **RNF07 (autentificación API)**
-* ✅ **RNF08 (HTTPS)**
-* ✅ **RNF09 (CI)**
-    * ✅ **Bonus:** se implementó un test simple en `api/test_app.py` 
-
-
-
-### **Documentación**
-Se pueden encontrar los archivos correspondientes en `/docs`
-
-* ✅ **RDOC01**
-* ✅ **RDOC02**
-* ✅ **RDOC03**
