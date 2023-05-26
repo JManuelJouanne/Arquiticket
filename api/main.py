@@ -2,12 +2,14 @@ from fastapi import Depends, FastAPI, Request
 from sqlalchemy.orm import Session
 
 import json
+from types import SimpleNamespace
 import requests
 from requests.models import Response
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
 from . import crud, models, schemas
 from .database import SessionLocal, engine
+from .mailing import send_notification
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -105,6 +107,11 @@ async def check_validation(validations: Request, db: Session = Depends(get_db)):
         # If grupo payload['group_id'] == 20
         if payload['group_id'] == 20:
             crud.update_ticket(db, request_id=payload['request_id'], status=1)
+            # Mailing
+            ticket = crud.get_ticket(db, payload['request_id'])
+            event = crud.get_event(db, ticket.event_id)
+            # URL para descargar las entradas de AWS Lambda
+            send_notification(ticket=ticket, event=event, url="")
     elif not payload["valid"]:
         crud.update_ticket(db, request_id=payload['request_id'], status=0)
     return
@@ -115,3 +122,19 @@ async def check_validation(validations: Request, db: Session = Depends(get_db)):
 def read_tickets(user_id=str, status=int, db: Session = Depends(get_db)):
     tickets = crud.get_tickets_user(db, user_id=user_id, status=status)
     return tickets
+
+# Testea si mailer funciona o no requiere un json en el post en formato {"email": "your@mail.totest"}
+
+
+@app.post("/test_mailer")
+async def test_mailer(email: Request):
+    userEmail = await email.json()
+    userEmail = json.loads(json.dumps(userEmail), object_hook=lambda d: SimpleNamespace(**d))
+    ticket = json.loads(json.dumps({"quantity": 1, "user_id": f"{userEmail.email}"}),
+                        object_hook=lambda d: SimpleNamespace(**d))
+    event = json.loads(json.dumps({"name": "Carrete loco", "price": 500}), object_hook=lambda d: SimpleNamespace(**d))
+    url = "http://www.google.com"
+    response = send_notification(ticket, event, url)
+    if response:
+        return {"message": "Mailer working :D"}
+    return {"message": "Mailer not working :("}
