@@ -32,3 +32,9 @@ class Ticket(Base):
     event_id = Column(String)
     quantity = Column(Integer)
     status = Column(Integer)
+
+
+class User(Base):
+    __tablename__ = "users"
+    user_id = Column(String, primary_key=True, index=True)
+    money = Column(Integer)

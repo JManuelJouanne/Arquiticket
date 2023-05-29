@@ -1,5 +1,6 @@
 services:
   db:
+    container_name: db
     image: postgres:14
     volumes:
       - postgres_data:/var/lib/postgresql/data/
@@ -11,6 +12,7 @@ services:
       - POSTGRES_DB=project_db
 
   subscriber:
+    container_name: subscriber
     build:
       context: ./subscriber
       dockerfile: subscriber.dockerfile
@@ -21,6 +23,7 @@ services:
       - .:/api
 
   publisher:
+    container_name: publisher
     build:
       context: ./publisher
       dockerfile: publisher.dockerfile
@@ -35,10 +38,11 @@ services:
       - .:/api
 
   api:
+    container_name: main-api
     build:
       context: ./api
       dockerfile: api.dockerfile
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn api.main:app --host 0.0.0.0'
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn main:app --host 0.0.0.0'
     depends_on:
       - db
     ports:
@@ -47,9 +51,35 @@ services:
       - 8010
     volumes:
       - .:/api
+  
+  redis:
+    container_name: redis
+    image: redis:latest
 
-
-
+  celery_worker:
+    container_name: celery-worker
+    build:
+      context: ./worker
+      dockerfile: worker.dockerfile
+    command: celery -A main.celery worker --autoscale=10,1 --loglevel=info
+    volumes:
+      - .:/api
+    depends_on:
+      - redis
+      - job_master
+    
+  job_master:
+    container_name: job-master
+    build:
+      context: ./job_master
+      dockerfile: job_master.dockerfile
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn main:app --host 0.0.0.0'
+    volumes:
+      - .:/api
+    ports:
+      - 6008:6000
+    expose:
+      - 6010
 
 volumes:
   postgres_data:

@@ -94,3 +94,4 @@ dmypy.json
 cython_debug/
 
 *.pem
+.vscode/

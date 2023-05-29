@@ -60,3 +60,19 @@ class Ticket(TicketBase):
 
     class Config:
         orm_mode = True
+
+
+class UserBase(BaseModel):
+    user_id: str
+    money: int
+
+
+class UserCreate(UserBase):
+    pass
+
+
+class User(UserBase):
+    user_id: str
+
+    class Config:
+        orm_mode = True

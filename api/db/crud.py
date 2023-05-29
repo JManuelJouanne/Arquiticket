@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
-from . import models, schemas
+
+from db import schemas
+from . import models
 
 
 def get_event(db: Session, event_id: str):
@@ -58,4 +60,27 @@ def create_ticket(db: Session, ticket: schemas.TicketCreate):
 
 def update_ticket(db: Session, request_id: str, status: int):
     db.query(models.Ticket).filter(models.Ticket.request_id == request_id).first().status = status
+    db.commit()
+
+
+def create_user(db: Session, user: schemas.UserCreate):
+    db_user = models.User(**user.dict())
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+def get_money(db: Session, user_id: str):
+    print(" d")
+    return db.query(models.User).filter(models.User.user_id == user_id).first()
+
+
+def add_money(db: Session, user_id: str, quantity: int):
+    db.query(models.User).filter(models.User.user_id == user_id).first().money += quantity
+    db.commit()
+
+
+def use_money(db: Session, user_id: str, quantity: int):
+    db.query(models.User).filter(models.User.user_id == user_id).first().money -= quantity
     db.commit()
