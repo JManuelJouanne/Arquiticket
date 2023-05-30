@@ -2,7 +2,6 @@ from fastapi import Request, APIRouter, Depends
 from db import crud
 from sqlalchemy.orm import Session
 from db.get import get_db
-from types import SimpleNamespace
 from .mailing import send_notification
 
 
