@@ -32,6 +32,7 @@ class Ticket(Base):
     event_id = Column(String)
     quantity = Column(Integer)
     status = Column(Integer)
+    link = Column(String)
 
 
 class User(Base):

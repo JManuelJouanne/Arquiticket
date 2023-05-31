@@ -49,6 +49,7 @@ class TicketBase(BaseModel):
     event_id: str
     quantity: int
     status: int
+    link: str
 
 
 class TicketCreate(TicketBase):

@@ -63,6 +63,11 @@ def update_ticket(db: Session, request_id: str, status: int):
     db.commit()
 
 
+def update_ticket_link(db: Session, request_id: str, link: str):
+    db.query(models.Ticket).filter(models.Ticket.request_id == request_id).first().link = link
+    db.commit()
+
+
 def create_user(db: Session, user: schemas.UserCreate):
     db_user = models.User(**user.dict())
     db.add(db_user)

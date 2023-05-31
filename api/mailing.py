@@ -1,3 +1,5 @@
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import smtplib
 
 
@@ -5,12 +7,22 @@ def send_notification(ticket, event, url):
     try:
         sender_email = "arquiticket@gmail.com"
 
-        body = f"Se ha realizado una compra en ArquiTicket\n\nDetalles de la compra:\n" \
-            f"Evento: {event.name}\n" \
-            f"Cantidad de entradas: {ticket.quantity}\n" \
-            f"Costo total: {event.price * ticket.quantity}\n\n" \
-            f"Puede descargar sus tickets en: {url}\n\n" \
-            f"Gracias por usar ArquiTicket"
+        body = f"""
+        <p>Se ha realizado una compra en ArquiTicket</p><br/>
+        <p>Detalles de la compra:</p><br/>
+        <p>Evento: {event.name}</p>
+        <p>Cantidad de entradas: {ticket.quantity}</p>
+        <p>Costo total: ${event.price * ticket.quantity}</p><br/>
+        <p>Puede descargar sus tickets en: <a href={url}>Descargar</a></p><br/>
+        <p>Gracias por usar ArquiTicket</p>
+        """
+
+        message = MIMEMultipart('alternative')
+        message.attach(MIMEText(body, "html"))
+        message["Subject"] = "Compra realizada en ArquiTicket"
+        message["From"] = sender_email
+        message["To"] = ticket.user_id
+
         connection = smtplib.SMTP('smtp.gmail.com', 587)
 
         connection.starttls()
@@ -19,7 +31,7 @@ def send_notification(ticket, event, url):
         print("Login success")
 
         connection.sendmail(from_addr=sender_email, to_addrs=ticket.user_id,
-                            msg=f"Subject:Compra realizada en ArquiTicket\n\n{body}")
+                            msg=message.as_string())
 
         connection.close()
         print("Connection closed")

@@ -70,7 +70,8 @@ async def validate_events(info: Request, db: Session = Depends(get_db)):
                                                               user_id=payload["user_id"],
                                                               event_id=payload["event_id"],
                                                               quantity=payload["quantity"],
-                                                              status=2))
+                                                              status=2,
+                                                              link=""))
 
         crud.use_money(db=db, user_id=payload["user_id"], quantity=payload["quantity"] *
                        crud.get_event(db, event_id=payload["event_id"]).price)
