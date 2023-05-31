@@ -52,7 +52,8 @@ async def check_validation(validations: Request, db: Session = Depends(get_db)):
 
             crud.update_ticket_link(db, request_id=payload["request_id"], link=result["url"])
             # URL para descargar las entradas de AWS Lambda
-            send_notification(ticket=ticket, event=event, url=result["url"])
+            url = result["url"].replace(" ", "")
+            send_notification(ticket=ticket, event=event, url=url)
     elif not payload["valid"] and int(payload["group_id"]) == 20:
         crud.update_ticket(db, request_id=payload["request_id"], status=0)
     return
@@ -90,8 +91,8 @@ async def test_mailer(email: Request):
     result = response['Payload'].read().decode('utf-8')
     result = json.loads(result)["body"]
 
-    print(result)
-    response = send_notification(ticket, event, result["url"])
+    url = result["url"].replace(" ", "")
+    send_notification(ticket=ticket, event=event, url=url)
     if response:
         return {"message": "Validation working :D"}
     return {"message": "Validation not working :("}
