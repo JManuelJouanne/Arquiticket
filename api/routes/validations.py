@@ -50,7 +50,7 @@ async def check_validation(validations: Request, db: Session = Depends(get_db)):
             result = response['Payload'].read().decode('utf-8')
             result = json.loads(result)["body"]
 
-            # crud.update_ticket_link(db, request_id=payload["request_id"], link=result["url"])
+            crud.update_ticket_link(db, request_id=payload["request_id"], link=result["url"])
             # URL para descargar las entradas de AWS Lambda
             send_notification(ticket=ticket, event=event, url=result["url"])
     elif not payload["valid"] and int(payload["group_id"]) == 20:
