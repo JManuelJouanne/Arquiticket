@@ -2,8 +2,7 @@ from fastapi import Request, APIRouter, Depends
 from db import crud
 from sqlalchemy.orm import Session
 from db.get import get_db
-from .mailing import send_notification
-
+from mailing import send_notification
 
 router_validations = APIRouter()
 
