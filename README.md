@@ -72,6 +72,6 @@ Se pueden encontrar los archivos correspondientes en `/docs`
 
 - ✅ **RDOC01** (2 ptos): Deben actualizar su diagrama UML de componentes con lo realizado en esta entrega, con explicaciones y detalle sobre el sistema.
 - ✅ **RDOC02** (2 ptos): Deben actualizar su documentación del pipeline CI para incluir los pasos extras necesarios para la realización del CD.
-- ❌ **RDOC03** (2 ptos): Deben incluir una documentación de cómo subir su aplicación en
+- ✅ **RDOC03** (2 ptos): Deben incluir una documentación de cómo subir su aplicación en
   Serverless/SAM, paso a paso
 - ✅ **RDOC04** (3 ptos): Deben documentar todas las posibles llamadas a sus APIs expuestas a sus clientes con algún estandar (Postman, Swagger u otra).
