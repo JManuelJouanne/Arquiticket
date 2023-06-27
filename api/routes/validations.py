@@ -1,17 +1,20 @@
 from fastapi import Request, APIRouter, Depends
 from db import crud
-from sqlalchemy.orm import Session
+# from sqlalchemy.orm import Session
+import sqlalchemy.orm as orm
 from db.get import get_db
 from mailing import send_notification
-from boto3 import Session
+# from boto3 import Session
+import boto3
 from types import SimpleNamespace
 import json
+from websockets import send_message
 
 router_validations = APIRouter()
 
 
 @router_validations.post("/validations/")
-async def check_validation(validations: Request, db: Session = Depends(get_db)):
+async def check_validation(validations: Request, db: orm.Session = Depends(get_db)):
     payload = await validations.json()
     # si se aprueba la validacion se tiene que modificar la cantidad de entradas
     if payload["valid"]:
@@ -23,6 +26,12 @@ async def check_validation(validations: Request, db: Session = Depends(get_db)):
         # If grupo payload['group_id'] == 20
         if int(payload["group_id"]) == 20:
             crud.update_ticket(db, request_id=payload["request_id"], status=1)
+            data = {
+                "user_id": "admin",
+                "event_id": request.event_id,
+                "quantity": request.quantity,
+            }
+            await send_message(data)
             # Mailing
             ticket = crud.get_ticket(db, payload['request_id'])
             event = crud.get_event(db, ticket.event_id)
@@ -34,7 +43,7 @@ async def check_validation(validations: Request, db: Session = Depends(get_db)):
                 "id": event.event_id,
                 "request_id": ticket.request_id,
             }
-            session = Session(
+            session = boto3.Session(
                 region_name='us-east-2',
                 aws_access_key_id='AKIAWTW2MNNWBVCCU3QL',
                 aws_secret_access_key='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'
@@ -75,7 +84,7 @@ async def test_mailer(email: Request):
         "request_id": ticket.request_id,
     }
 
-    session = Session(
+    session = boto3.Session(
         region_name='us-east-2',
         aws_access_key_id='AKIAWTW2MNNWBVCCU3QL',
         aws_secret_access_key='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'
@@ -98,16 +107,16 @@ async def test_mailer(email: Request):
     return {"message": "Validation not working :("}
 
 
-@router_validations.post("/test_mailer")
-async def test_mailer(email: Request):
-    userEmail = await email.json()
-    userEmail = json.loads(json.dumps(userEmail), object_hook=lambda d: SimpleNamespace(**d))
-    ticket = json.loads(json.dumps({"quantity": 1, "user_id": f"{userEmail.email}", "request_id": "5164781"}),
-                        object_hook=lambda d: SimpleNamespace(**d))
-    event = json.loads(json.dumps({"name": "Carrete loco 2", "price": 500, "date": "31-05-2023",
-                       "event_id": "257623y7hr"}), object_hook=lambda d: SimpleNamespace(**d))
+# @router_validations.post("/test_mailer")
+# async def test_mailer(email: Request):
+#     userEmail = await email.json()
+#     userEmail = json.loads(json.dumps(userEmail), object_hook=lambda d: SimpleNamespace(**d))
+#     ticket = json.loads(json.dumps({"quantity": 1, "user_id": f"{userEmail.email}", "request_id": "5164781"}),
+#                         object_hook=lambda d: SimpleNamespace(**d))
+#     event = json.loads(json.dumps({"name": "Carrete loco 2", "price": 500, "date": "31-05-2023",
+#                        "event_id": "257623y7hr"}), object_hook=lambda d: SimpleNamespace(**d))
 
-    response = send_notification(ticket, event, "https://www.google.com")
-    if response:
-        return {"message": "Mailer working :D"}
-    return {"message": "Mailer not working :("}
+#     response = send_notification(ticket, event, "https://www.google.com")
+#     if response:
+#         return {"message": "Mailer working :D"}
+#     return {"message": "Mailer not working :("}
