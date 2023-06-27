@@ -8,7 +8,7 @@ from mailing import send_notification
 import boto3
 from types import SimpleNamespace
 import json
-from websockets import send_message
+from routes.websockets import send_message
 
 router_validations = APIRouter()
 
@@ -72,10 +72,12 @@ async def check_validation(validations: Request, db: orm.Session = Depends(get_d
 async def test_mailer(email: Request):
     userEmail = await email.json()
     userEmail = json.loads(json.dumps(userEmail), object_hook=lambda d: SimpleNamespace(**d))
-    ticket = json.loads(json.dumps({"quantity": 1, "user_id": f"{userEmail.email}", "request_id": "5164781"}),
-                        object_hook=lambda d: SimpleNamespace(**d))
+    ticket = json.loads(
+        json.dumps({"quantity": 1, "user_id": f"{userEmail.email}", "request_id": "5164781"}),
+        object_hook=lambda d: SimpleNamespace(**d))
     event = json.loads(json.dumps({"name": "Carrete loco 2", "price": 500, "date": "31-05-2023",
-                       "event_id": "257623y7hr"}), object_hook=lambda d: SimpleNamespace(**d))
+                                   "event_id": "257623y7hr"}),
+                       object_hook=lambda d: SimpleNamespace(**d))
     data = {
         "name": event.name,
         "user": ticket.user_id,
@@ -105,7 +107,6 @@ async def test_mailer(email: Request):
     if response:
         return {"message": "Validation working :D"}
     return {"message": "Validation not working :("}
-
 
 # @router_validations.post("/test_mailer")
 # async def test_mailer(email: Request):
