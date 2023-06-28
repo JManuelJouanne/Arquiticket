@@ -23,3 +23,9 @@ async def add_money(info: Request, db: Session = Depends(get_db)):
     payload = await info.json()
     crud.add_money(db, payload['user_id'], payload['quantity'])
     return
+
+
+@users.patch("/user/admin/{user_id}")
+async def update_user(user_id: int, db: Session = Depends(get_db)):
+    crud.update_user(db, user_id=user_id)
+    return

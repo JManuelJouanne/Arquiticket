@@ -16,9 +16,12 @@ router_validations = APIRouter()
 @router_validations.post("/validations/")
 async def check_validation(validations: Request, db: orm.Session = Depends(get_db)):
     payload = await validations.json()
-    # si se aprueba la validacion se tiene que modificar la cantidad de entradas
     if payload["valid"]:
         request = crud.get_request(db, payload["request_id"])
+
+        crud.update_event(db, request.event_id, request.quantity)
+        if int(payload["group_id"]) == 20:
+            crud.update_our_event(db, request.event_id, request.quantity)
         # De esta request se obtiene el id del evento y la cantidad de entradas vendidas
         # Se las resto al evento en cuestión
         if request is not None:

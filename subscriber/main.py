@@ -10,6 +10,7 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("events/chile")
     client.subscribe("events/requests")
     client.subscribe("events/validation")
+    client.subscribe("events/auctions")
 
 
 def on_message(client, userdata, msg):
@@ -30,6 +31,12 @@ def on_message(client, userdata, msg):
     elif (msg.topic == "events/validation"):
         requests.post(
             "http://api:8000/validations/",
+            headers={"Content-type": "application/json"},
+            json=json.loads(msg.payload)
+        )
+    elif (msg.topic == "events/auctions"):
+        requests.post(
+            "http://api:8000/auctions/",
             headers={"Content-type": "application/json"},
             json=json.loads(msg.payload)
         )

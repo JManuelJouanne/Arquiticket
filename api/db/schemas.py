@@ -10,6 +10,7 @@ class EventBase(BaseModel):
     location: str
     latitude: int
     longitude: int
+    assigned: int = 0
 
 
 class EventCreate(EventBase):
@@ -66,6 +67,7 @@ class Ticket(TicketBase):
 class UserBase(BaseModel):
     user_id: str
     money: int
+    admin: bool = False
 
 
 class UserCreate(UserBase):
@@ -74,6 +76,69 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     user_id: str
+
+    class Config:
+        orm_mode = True
+
+
+class OfferBase(BaseModel):
+    auction_id: str
+    proposal_id: str
+    event_id: str
+    quantity: int
+    group_id: int
+    type: str
+    status: int = 2
+
+
+class OfferCreate(OfferBase):
+    pass
+
+
+class Offer(OfferBase):
+    auction_id: str
+
+    class Config:
+        orm_mode = True
+
+
+class ProposalBase(BaseModel):
+    auction_id: str
+    proposal_id: str
+    event_id: str
+    quantity: int
+    group_id: int
+    type: str
+    status: int = 2
+
+
+class ProposalCreate(ProposalBase):
+    pass
+
+
+class Proposal(ProposalBase):
+    proposal_id: str
+
+    class Config:
+        orm_mode = True
+
+
+class AcceptanceBase(BaseModel):
+    auction_id: str
+    proposal_id: str
+    event_id: str
+    quantity: int
+    group_id: int
+    type: str
+    status: int = 2
+
+
+class AcceptanceCreate(AcceptanceBase):
+    pass
+
+
+class Acceptance(AcceptanceBase):
+    proposal_id: str
 
     class Config:
         orm_mode = True

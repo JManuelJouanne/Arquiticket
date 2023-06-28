@@ -34,6 +34,13 @@ async def send_validation(request: Request):
     client.publish("events/requests", info)
 
 
+@app.post("/auction_offer/")
+async def send_offer(request: Request):
+    info = await request.json()
+    print(f"infooooooo {info}")
+    client.publish("events/auctions", info)
+
+
 load_dotenv()
 
 MY_ENV_VAR = os.getenv('MY_ENV_VAR')

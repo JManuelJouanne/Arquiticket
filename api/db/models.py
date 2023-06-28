@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String
-
+from sqlalchemy import Column, Integer, String, Boolean
 from .database import Base
 
 
@@ -13,6 +12,7 @@ class Event(Base):
     location = Column(String)
     latitude = Column(Integer)
     longitude = Column(Integer)
+    assigned = Column(Integer)
 
 
 class Request(Base):
@@ -39,3 +39,26 @@ class User(Base):
     __tablename__ = "users"
     user_id = Column(String, primary_key=True, index=True)
     money = Column(Integer)
+    admin = Column(Boolean)
+
+
+class Offer(Base):
+    __tablename__ = "offers"
+    auction_id = Column(String, primary_key=True, index=True)
+    proposal_id = Column(String)
+    event_id = Column(String)
+    quantity = Column(Integer)
+    group_id = Column(Integer)
+    type = Column(String)
+    status = Column(Integer)  # 0: rejected, 1: accepted, 2: pending
+
+
+class Proposal(Base):
+    __tablename__ = "proposals"
+    auction_id = Column(String)
+    proposal_id = Column(String, primary_key=True, index=True)
+    event_id = Column(String)
+    quantity = Column(Integer)
+    group_id = Column(Integer)
+    type = Column(String)
+    status = Column(Integer)  # 0: rejected, 1: accepted, 2: pending
