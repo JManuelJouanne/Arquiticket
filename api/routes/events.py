@@ -1,7 +1,7 @@
 from fastapi import Request, APIRouter, Depends
 from db.get import get_db
 from db import crud, schemas
-from mailing import send_notification
+from mailing import mailer
 from requests.models import Response
 from sqlalchemy.orm import Session
 import uuid
@@ -56,8 +56,8 @@ async def validate_events(info: Request, db: Session = Depends(get_db)):
                        crud.get_event(db, event_id=payload["event_id"]).price)
         crud.update_our_event_less(db=db, event_id=payload["event_id"],
                                    tickets=payload["quantity"])
-        event = crud.get_event(db, created_ticket.event_id)
-        send_notification(ticket=created_ticket, event=event, url="")
+
+        mailer(uuid_request, created_ticket["event_id"])
 
         response = Response()
         response.headers = {"Access-Control-Allow-Origin": "*"}

@@ -22,50 +22,13 @@ async def check_validation(validations: Request, db: orm.Session = Depends(get_d
         crud.update_event(db, request.event_id, request.quantity)
         if int(payload["group_id"]) == 20:
             crud.update_our_event(db, request.event_id, request.quantity)
-        # De esta request se obtiene el id del evento y la cantidad de entradas vendidas
-        # Se las resto al evento en cuestión
-        if request is not None:
-            crud.update_event(db, request.event_id, request.quantity)
-        # If grupo payload['group_id'] == 20
-        if int(payload["group_id"]) == 20:
-            crud.update_ticket(db, request_id=payload["request_id"], status=1)
             data = {
                 "user_id": "admin",
                 "event_id": request.event_id,
                 "quantity": request.quantity,
             }
             await send_message(data)
-            # Mailing
-            ticket = crud.get_ticket(db, payload['request_id'])
-            event = crud.get_event(db, ticket.event_id)
-            # lambda
-            data = {
-                "name": event.name,
-                "user": ticket.user_id,
-                "date": event.date,
-                "id": event.event_id,
-                "request_id": ticket.request_id,
-            }
-            session = boto3.Session(
-                region_name='us-east-2',
-                aws_access_key_id='AKIAWTW2MNNWBVCCU3QL',
-                aws_secret_access_key='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'
-            )
 
-            lambda_client = session.client('lambda')
-
-            response = lambda_client.invoke(
-                FunctionName='generar_ticket',
-                Payload=json.dumps(data)
-            )
-
-            result = response['Payload'].read().decode('utf-8')
-            result = json.loads(result)["body"]
-
-            crud.update_ticket_link(db, request_id=payload["request_id"], link=result["url"])
-            # URL para descargar las entradas de AWS Lambda
-            url = result["url"].replace(" ", "")
-            send_notification(ticket=ticket, event=event, url=url)
     elif not payload["valid"] and int(payload["group_id"]) == 20:
         crud.update_ticket(db, request_id=payload["request_id"], status=0)
     return

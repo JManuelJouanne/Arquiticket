@@ -1,6 +1,12 @@
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib
+import boto3
+from db import crud
+import json
+import sqlalchemy.orm as orm
+from fastapi import Depends
+from db.get import get_db
 
 
 def send_notification(ticket, event, url):
@@ -38,3 +44,37 @@ def send_notification(ticket, event, url):
     except Exception:
         return False
     return True
+
+
+def mailer(ticket_id: str, event_id: str, db: orm.Session = Depends(get_db)):
+    # Mailing
+    ticket = crud.get_ticket(db, ticket_id)
+    event = crud.get_event(db, event_id)
+    # lambda
+    data = {
+        "name": event.name,
+        "user": ticket.user_id,
+        "date": event.date,
+        "id": event.event_id,
+        "request_id": ticket.request_id,
+    }
+    session = boto3.Session(
+        region_name='us-east-2',
+        aws_access_key_id='AKIAWTW2MNNWBVCCU3QL',
+        aws_secret_access_key='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'
+    )
+
+    lambda_client = session.client('lambda')
+
+    response = lambda_client.invoke(
+        FunctionName='generar_ticket',
+        Payload=json.dumps(data)
+    )
+
+    result = response['Payload'].read().decode('utf-8')
+    result = json.loads(result)["body"]
+
+    crud.update_ticket_link(db, request_id=ticket_id, link=result["url"])
+    # URL para descargar las entradas de AWS Lambda
+    url = result["url"].replace(" ", "")
+    return send_notification(ticket=ticket, event=event, url=url)
