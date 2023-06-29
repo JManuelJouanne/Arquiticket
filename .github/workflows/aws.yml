@@ -23,6 +23,7 @@ jobs:
           # For now, this only starts the app without any additional changes
           # this should be different once lambda and S3 is implemented
           script: |
+            if [ -d "${{ secrets.TARGET_DIR }}" ]; then echo repo exists; else repo does not exists && git clone https://github.com/iic2173/e1-2023-1-grupo-20-backend.git; fi
             cd ~/${{ secrets.TARGET_DIR }}
             git pull
             docker-compose stop
