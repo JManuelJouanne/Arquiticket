@@ -2,11 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from db.database import engine
 from router import router
-from sqlalchemy_utils import drop_database, create_database
+# from sqlalchemy_utils import drop_database, create_database
 from db import models
 
-drop_database(engine.url)
-create_database(engine.url)
+# drop_database(engine.url)
+# create_database(engine.url)
 
 models.Base.metadata.create_all(bind=engine)
 
