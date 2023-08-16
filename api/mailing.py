@@ -11,7 +11,7 @@ from db.get import get_db
 
 def send_notification(ticket, event, url):
     try:
-        sender_email = "arquiticket@gmail.com"
+        sender_email = SENDER_EMAIL
 
         body = f"""
         <p>Se ha realizado una compra en ArquiTicket</p><br/>
@@ -33,7 +33,7 @@ def send_notification(ticket, event, url):
 
         connection.starttls()
         # contraseña puede no funcionar en otros dispositivos talvez
-        connection.login(user=sender_email, password="vmpfavtatdoftaby")
+        connection.login(user=sender_email, password=PASSWORD)
         print("Login success")
 
         connection.sendmail(from_addr=sender_email, to_addrs=ticket.user_id,
@@ -59,9 +59,9 @@ def mailer(ticket_id: str, event_id: str, db: orm.Session = Depends(get_db)):
         "request_id": ticket.request_id,
     }
     session = boto3.Session(
-        region_name='us-east-2',
-        aws_access_key_id='AKIAWTW2MNNWBVCCU3QL',
-        aws_secret_access_key='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'
+        region_name=REGION,
+        aws_access_key_id=ACCESS_KEY,
+        aws_secret_access_key=SECRET_KEY
     )
 
     lambda_client = session.client('lambda')
