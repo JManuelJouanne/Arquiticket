@@ -72,9 +72,9 @@ async def validate_events(info: Request, db: Session = Depends(get_db)):
             "request_id": ticket.request_id,
         }
         session = boto3.Session(
-            region_name='us-east-2',
-            aws_access_key_id='AKIAWTW2MNNWBVCCU3QL',
-            aws_secret_access_key='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'
+            region_name=REGION,
+            aws_access_key_id=ACCESS_KEY,
+            aws_secret_access_key=SECRET_KEY
         )
 
         lambda_client = session.client('lambda')
