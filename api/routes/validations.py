@@ -53,9 +53,9 @@ async def test_mailer(email: Request):
     }
 
     session = boto3.Session(
-        region_name='us-east-2',
-        aws_access_key_id='AKIAWTW2MNNWBVCCU3QL',
-        aws_secret_access_key='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'
+        region_name=REGION,
+        aws_access_key_id=ACCESS_KEY,
+        aws_secret_access_key=SECRET_KEY
     )
 
     lambda_client = session.client('lambda')
@@ -73,17 +73,3 @@ async def test_mailer(email: Request):
     if response:
         return {"message": "Validation working :D"}
     return {"message": "Validation not working :("}
-
-# @router_validations.post("/test_mailer")
-# async def test_mailer(email: Request):
-#     userEmail = await email.json()
-#     userEmail = json.loads(json.dumps(userEmail), object_hook=lambda d: SimpleNamespace(**d))
-#     ticket = json.loads(json.dumps({"quantity": 1, "user_id": f"{userEmail.email}", "request_id": "5164781"}),
-#                         object_hook=lambda d: SimpleNamespace(**d))
-#     event = json.loads(json.dumps({"name": "Carrete loco 2", "price": 500, "date": "31-05-2023",
-#                        "event_id": "257623y7hr"}), object_hook=lambda d: SimpleNamespace(**d))
-
-#     response = send_notification(ticket, event, "https://www.google.com")
-#     if response:
-#         return {"message": "Mailer working :D"}
-#     return {"message": "Mailer not working :("}
