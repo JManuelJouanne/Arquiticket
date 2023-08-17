@@ -15,7 +15,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "E0-Arquitectura" {
-  ami           = "ami-0568936c8d2b91c4e"
+  ami           = AMI
   instance_type = "t2.micro"
 
   tags = {
